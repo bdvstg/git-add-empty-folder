@@ -6,8 +6,8 @@ add empty folder into git repository
 Git can not add a empty folder. and I don't want add any file in it.  
 After google, I found this thread.  
 https://stackoverflow.com/questions/115983/how-can-i-add-an-empty-directory-to-a-git-repository  
-And I write this script. I use it to mantain my rootfs.  
-In roorfs, some folder should be empty for mount point. (ex: /dev, /sys, /proc)
+Then I write this script. I use it to mantain my rootfs.  
+In roorfs, some folder that as a mount point, should be empty. (ex: /dev, /sys, /proc)
 
 ## usage
 
