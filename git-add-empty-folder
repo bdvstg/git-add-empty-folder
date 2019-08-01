@@ -1,0 +1,51 @@
+#!/bin/bash
+WD=`pwd`
+
+GIT_ROOT=`git rev-parse --show-toplevel`
+# ensure it in a repository
+if [ $? -ne 0 ]; then exit 1; fi
+
+BRANCH=`git branch | grep \* | cut -d ' ' -f2`
+
+showSkip() {
+    1>&2 echo "skip: $1"
+}
+
+add_empty_folder() {
+# Working Dir is GIT_ROOT
+# and target is relative to GIT_ROOT
+    target=$1
+    echo "add $target to git"
+    cd $target
+    SHA=`git write-tree`
+    cd $GIT_ROOT
+    git update-index --index-info << EOF_GIT_EMPTY_TREE
+040000 tree $SHA	$target
+EOF_GIT_EMPTY_TREE
+}
+
+for var in "$@"; do
+    # ensure it a folder
+    cd $WD
+    if [ ! -d $var ];then
+        showSkip "$var is not exist or not a folder"
+        continue
+    fi
+
+    # let based on GIT_ROOT
+    cd $var
+    target=`realpath --relative-to=$GIT_ROOT $PWD`
+    cd $GIT_ROOT
+
+    # ensure it has not add
+    git ls-tree -d $BRANCH:$target 2>&1 > /dev/null
+    exist=$?
+    if [ $exist -eq 0 ];then
+        showSkip "$var has exist in git"
+        continue
+    fi
+
+    # add
+    add_empty_folder $target
+done
+
