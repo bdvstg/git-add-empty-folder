@@ -38,7 +38,7 @@ for var in "$@"; do
     cd $GIT_ROOT
 
     # ensure it has not add
-    git ls-tree -d $BRANCH:$target 2>&1 > /dev/null
+    git ls-tree -d $BRANCH:$target 2> /dev/null 1>&2
     exist=$?
     if [ $exist -eq 0 ];then
         showSkip "$var has exist in git"
